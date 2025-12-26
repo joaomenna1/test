@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { z } from "zod";
 import { getAllChecklistsService } from "@/services/checklist-service";
 import { authMiddleware } from "@/middlewares/auth";
+import { checklistBodyResponseSchema, errorResponseSchema } from "@/validations";
 
 export async function checklistRoutes(app: FastifyInstance) {
   app.get(
@@ -10,19 +10,22 @@ export async function checklistRoutes(app: FastifyInstance) {
       schema: {
         summary: "Get all checklists",
         tags: ["Checklists"],
-        response: {
-          200: z.array(
-            z.object({
-              id: z.string(),
-              description: z.string(),
-            })
-          ),
+        response:{ 
+          201: checklistBodyResponseSchema,
+          401: errorResponseSchema
         },
       },
       preHandler: authMiddleware,
     },
-    async () => {
-      return getAllChecklistsService();
+    async (request, reply) => {
+      try {
+        await getAllChecklistsService();
+      } catch {
+        return reply.status(401).send({
+          error: "ERROR",
+          message: "Something wrong in consult database in checklist!"
+        })        
+      }
     }
   );
 }

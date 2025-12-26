@@ -13,10 +13,13 @@ export async function findChecklistsByIds(ids: string[]) {
 }
 
 export async function getAllChecklists() {
-   return db
+  
+   const data = await db
     .select({
       id: checklists.id,
       description: checklists.description,
     })
     .from(checklists);
+
+    return data;
 }

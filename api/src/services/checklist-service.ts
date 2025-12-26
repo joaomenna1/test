@@ -2,7 +2,9 @@ import { getAllChecklists } from "@/repositories/checklists-repository";
 import { findChecklistsByIds } from "@/repositories/checklists-repository";
 
 export async function getAllChecklistsService() {
-  getAllChecklists();
+  const checklists = await getAllChecklists();
+
+  return checklists;
 }
 
 export async function validateChecklistIds(checklistIds: string[]) {
